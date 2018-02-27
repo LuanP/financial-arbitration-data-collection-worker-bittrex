@@ -40,7 +40,6 @@
     "config": "^1.29.4",
     "knex": "^0.14.4",
     "mysql2": "^1.5.2",
-    "node.bittrex.api": "^1.0.0",
     "ramda": "^0.25.0",
     "sequelize": "^4.33.4",
     "x-cryptocurrencies-normalizr": "^1.1.1"
