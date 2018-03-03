@@ -7,6 +7,8 @@ const Data = require('./utils/sequelize').Data
 
 const Worker = () => {}
 
+Worker.blackList = []
+
 Worker.getData = async (normalizedPair) => {
   /*
    * The `normalizedPair` parameter is normalized accross all workers
@@ -27,6 +29,12 @@ Worker.getData = async (normalizedPair) => {
     .then((res) => {
       if (!res.data.success) {
         logger.error(res.data)
+
+        if (res.data.message === 'INVALID_MARKET') {
+          Worker.blackList.push(normalizedPair)
+        }
+
+        return undefined
       }
 
       return {
@@ -68,6 +76,10 @@ Worker.call = async () => {
     for (let i = 0; i < coinPairs.length; i++) {
       let coinPair = coinPairs[i]
 
+      if (R.indexOf(coinPair, Worker.blackList) > -1) {
+        continue
+      }
+
       requestList.push(
         Worker.getData(coinPair)
       )
@@ -78,6 +90,9 @@ Worker.call = async () => {
     .then(async (responses) => {
       for (let i = 0; i < responses.length; i++) {
         let response = responses[i]
+        if (!response) {
+          continue
+        }
 
         logger.debug(response)
         await Data.create(response)

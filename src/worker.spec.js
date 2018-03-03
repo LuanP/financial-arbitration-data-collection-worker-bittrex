@@ -24,7 +24,7 @@ describe('worker', () => {
     const normalizedSymbol = 'BCH-BTC'
     const denormalizedSymbol = 'BCH-BTC'
 
-    stubRequest.resolves({data: {result: {'Last': 1.01230}}})
+    stubRequest.resolves({data: {result: {'Last': 1.01230}, 'success': true}})
 
     Worker.getData(normalizedSymbol).then((response) => {
       assert.strictEqual(stubRequest.calledOnce, true, 'request was called once')
@@ -40,13 +40,17 @@ describe('worker', () => {
 
   it('start worker in single-mode', (done) => {
     const denormalizedSymbol = 'BCH-BTC'
+    console.log(config.collect.pairs)
+    console.log(config.collect.pairs.split(',').length)
+    const numberOfPairs = config.collect.pairs.split(',').length
 
-    stubRequest.resolves({data: {result: {'Last': 1.01230}}})
+    stubRequest.resolves({data: {result: {'Last': 1.01230}, success: true}})
 
     Worker.start().then(() => {
-      assert.strictEqual(stubData.calledTwice, true, 'saved data for each pair')
+      console.log('call count', stubData.callCount)
+      assert.strictEqual(stubData.callCount, numberOfPairs, 'saved data for each pair')
 
-      assert.strictEqual(stubRequest.calledTwice, true, 'request was called once')
+      assert.strictEqual(stubRequest.callCount, numberOfPairs, 'request was called for each pair')
       assert.strictEqual(
         stubRequest.calledWith(`${config.api.url}?market=${denormalizedSymbol}`),
         true,
