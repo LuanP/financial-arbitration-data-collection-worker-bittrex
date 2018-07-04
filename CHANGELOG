@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 * get only matches
+* migrate project from gitlab to github
+* update project name
+* update node/npm versions
 
 ## [1.0.0] - 2018-03-02
 ### Added
